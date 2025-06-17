@@ -2,9 +2,9 @@
 ✈️🧳 The Packing Checklist Chatbot is an interactive, AI-inspired travel assistant that helps users generate smart, personalized packing checklists and outfit plans for trips. Designed with a vibrant UI and enhanced with game challenges, this single-page web app provides a fun and functional travel planning experience.
 
 
-✨ Features
+✨ Features:
 
-🤖 AI Chat Assistant
+🤖 AI Chat Assistant:
 
 → Natural, conversational interface
 
@@ -12,7 +12,7 @@
 
 → Predefined suggestions: Beach, Business, Weekend, Hiking
 
-📋 Smart Packing Checklist
+📋 Smart Packing Checklist:
 
 → Categorized items (e.g., Clothing, Electronics, Essentials)
 
@@ -20,13 +20,13 @@
 
 → Save, reset, or print your packing list
 
-👗 Outfit Planner
+👗 Outfit Planner:
 
 → Provides mix-and-match outfit recommendations
 
 → Displays context-aware combinations and versatility tips
 
-🎮 Game Mode Challenges
+🎮 Game Mode Challenges:
 
 → Fun and engaging packing challenges:
 
@@ -38,7 +38,7 @@
 
 → Gamified feedback and score tracking system
 
-🧠 AI Suggestions & Modals
+🧠 AI Suggestions & Modals:
 
 → Typing animation for bot realism
 
@@ -46,13 +46,13 @@
 
 → Modal for saved checklists and trip history
 
-💾 Save & Retrieve
+💾 Save & Retrieve:
 
 → Save customized checklists to local storage
 
 → View and reload past lists with a click
 
-🎨 UI Highlights
+🎨 UI Highlights:
 
 → Floating animated travel icons
 
@@ -60,7 +60,7 @@
 
 → Responsive layout with scrollable chat
 
-🛠️ Built With
+🛠️ Built With:
 
 → HTML5 & CSS3 – Responsive layout and styles
 
