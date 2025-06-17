@@ -5,6 +5,7 @@
 ✨ Features
 
 🤖 AI Chat Assistant
+
 → Natural, conversational interface
 
 → Suggests packing lists based on destination, trip type, and activities
@@ -12,6 +13,7 @@
 → Predefined suggestions: Beach, Business, Weekend, Hiking
 
 📋 Smart Packing Checklist
+
 → Categorized items (e.g., Clothing, Electronics, Essentials)
 
 → Interactive checkboxes with real-time progress tracking
@@ -19,11 +21,13 @@
 → Save, reset, or print your packing list
 
 👗 Outfit Planner
+
 → Provides mix-and-match outfit recommendations
 
 → Displays context-aware combinations and versatility tips
 
 🎮 Game Mode Challenges
+
 → Fun and engaging packing challenges:
 
 → Pack under 7kg
@@ -35,6 +39,7 @@
 → Gamified feedback and score tracking system
 
 🧠 AI Suggestions & Modals
+
 → Typing animation for bot realism
 
 → Random travel tips
@@ -42,11 +47,13 @@
 → Modal for saved checklists and trip history
 
 💾 Save & Retrieve
+
 → Save customized checklists to local storage
 
 → View and reload past lists with a click
 
 🎨 UI Highlights
+
 → Floating animated travel icons
 
 → Suitcase bounce animation
@@ -54,6 +61,7 @@
 → Responsive layout with scrollable chat
 
 🛠️ Built With
+
 → HTML5 & CSS3 – Responsive layout and styles
 
 → Vanilla JavaScript – Logic and interactivity
