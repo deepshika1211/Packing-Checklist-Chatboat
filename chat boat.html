@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Packing Checklist Generator</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #ff7e5f;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Suitcase Animation */
+        .suitcase-container {
+            margin: 20px auto;
+            width: 100px;
+            height: 80px;
+            perspective: 1000px;
+        }
+
+        .suitcase {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: suitcaseBounce 2s infinite alternate;
+        }
+
+        .suitcase .lid, 
+        .suitcase .body, 
+        .suitcase .handle {
+            position: absolute;
+            background: #4a6fa5;
+            border: 2px solid #2a4a75;
+        }
+
+        .suitcase .body {
+            width: 80px;
+            height: 50px;
+            bottom: 0;
+            left: 10px;
+        }
+
+        .suitcase .lid {
+            width: 80px;
+            height: 30px;
+            top: 0;
+            left: 10px;
+            transform-origin: bottom center;
+            animation: lidOpen 2s infinite alternate;
+        }
+
+        .suitcase .handle {
+            width: 30px;
+            height: 5px;
+            top: -5px;
+            left: 35px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        @keyframes suitcaseBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        @keyframes lidOpen {
+            0% { transform: rotateX(0); }
+            100% { transform: rotateX(-20deg); }
+        }
+
+        /* Destination Gallery */
+        .destination-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .destination-gallery img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .destination-gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* Floating Icons */
+        .floating-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.3;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-header img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            background-color: var(--light-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: white;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        #send-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #send-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 0 15px 15px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .suggestion-btn {
+            background-color: var(--light-color);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .suggestion-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Checklist Container */
+        .checklist-container {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .checklist-title {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .checklist-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .checklist-items {
+            list-style-type: none;
+        }
+
+        .checklist-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* Progress Dashboard */
+        .progress-dashboard {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .progress-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .progress-bg {
+            fill: none;
+            stroke: #e0e0e0;
+            stroke-width: 6;
+        }
+
+        .progress-fill {
+            fill: none;
+            stroke: #4a6fa5;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-percent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #4a6fa5;
+        }
+
+        .progress-stats {
+            flex: 1;
+        }
+
+        .stat {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat span {
+            font-weight: bold;
+            color: #4a6fa5;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .print-btn {
+            background-color: var(--accent-color);
+        }
+
+        .print-btn:hover {
+            background-color: #e06b4d;
+        }
+
+        .save-btn {
+            background-color: var(--success-color);
+        }
+
+        .save-btn:hover {
+            background-color: #3d8b40;
+        }
+
+        .reset-btn {
+            background-color: var(--warning-color);
+        }
+
+        .reset-btn:hover {
+            background-color: #e68a00;
+        }
+
+        /* Category sections */
+        .category-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 5px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-left: 5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+
+        /* Saved lists */
+        .saved-lists {
+            margin-top: 20px;
+        }
+
+        .saved-list {
+            background-color: var(--light-color);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .saved-list:hover {
+            background-color: #e9ecef;
+        }
+
+        .saved-list-title {
+            font-weight: bold;
+        }
+
+        .saved-list-date {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+        }
+
+        /* Game Mode Styles */
+        .game-mode-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .game-challenges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .challenge-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .challenge-btn.active {
+            background-color: var(--secondary-color);
+        }
+
+        .challenge-btn:hover {
+            background-color: #e06b4d;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .game-score {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .game-feedback {
+            color: var(--success-color);
+            font-size: 0.9rem;
+        }
+
+        /* Outfit Planner Styles */
+        .outfit-planner-container {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .outfit-planner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .outfit-planner-title {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .outfit-items {
+            list-style-type: none;
+        }
+
+        .outfit-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .outfit-item:last-child {
+            border-bottom: none;
+        }
+
+        .outfit-combination {
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .outfit-details {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        .versatile-note {
+            font-style: italic;
+            color: var(--accent-color);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .chat-container {
+                height: 400px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+
+            .checklist-actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .destination-gallery img {
+                width: 80px;
+                height: 60px;
+            }
+
+            .game-challenges {
+                flex-direction: column;
+            }
+
+            .challenge-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Icons Background -->
+    <div class="floating-icons" id="floating-icons"></div>
+
+    <div class="container">
+        <header>
+            <h1>Travel Packing Checklist Generator</h1>
+            <p class="subtitle">Get personalized packing lists and outfit plans with AI recommendations</p>
+            <div class="info-icon" id="info-btn">i</div>
+            
+            <!-- Suitcase Animation -->
+            <div class="suitcase-container">
+                <div class="suitcase">
+                    <div class="lid"></div>
+                    <div class="body"></div>
+                    <div class="handle"></div>
+                </div>
+            </div>
+            
+            <!-- Destination Gallery -->
+            <div class="destination-gallery">
+                <img src="beach.jpg" alt="Beach">
+                <img src="mountain.jpg" alt="Mountain">
+                <img src="city.jpg" alt="City">
+                <img src="camping.jpg" alt="Camping">
+            </div>
+        </header>
+        <p class="subtitle">Deepshika</p>
+
+        <div class="game-mode-container" id="game-mode-container">
+            <div class="game-challenges">
+                <button class="challenge-btn" data-challenge="weight">Pack under 7kg</button>
+                <button class="challenge-btn" data-challenge="items">Only 10 items max</button>
+                <button class="challenge-btn" data-challenge="backpack">Fit in one backpack</button>
+            </div>
+            <div class="game-stats">
+                <div class="game-score">Score: <span id="game-score">0</span></div>
+                <div class="game-feedback" id="game-feedback"></div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Assistant">
+                Packing Assistant
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="suggestions" id="suggestions">
+                <button class="suggestion-btn" data-type="beach">🏖️ Beach vacation</button>
+                <button class="suggestion-btn" data-type="business">💼 Business trip</button>
+                <button class="suggestion-btn" data-type="weekend">✈️ Weekend getaway</button>
+                <button class="suggestion-btn" data-type="hiking">🥾 Hiking adventure</button>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Tell me about your trip (destination, duration, activities)...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+
+        <div class="checklist-container" id="checklist-container">
+            <div class="checklist-header">
+                <div class="checklist-title" id="checklist-title">Your Packing Checklist</div>
+                <div class="checklist-actions">
+                    <button class="action-btn save-btn" id="save-btn">
+                        <span>💾</span> Save
+                    </button>
+                    <button class="action-btn print-btn" id="print-btn">
+                        <span>🖨️</span> Print
+                    </button>
+                    <button class="action-btn reset-btn" id="reset-btn">
+                        <span>🔄</span> New
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Progress Dashboard -->
+            <div class="progress-dashboard">
+                <div class="progress-circle">
+                    <svg width="80" height="80">
+                        <circle class="progress-bg" cx="40" cy="40" r="35"></circle>
+                        <circle class="progress-fill" cx="40" cy="40" r="35"></circle>
+                    </svg>
+                    <div class="progress-percent">0%</div>
+                </div>
+                <div class="progress-stats">
+                    <div class="stat"><span id="packed-count">0</span> packed</div>
+                    <div class="stat"><span id="remaining-count">0</span> remaining</div>
+                </div>
+            </div>
+            
+            <ul class="checklist-items" id="checklist-items">
+                <!-- Checklist items will appear here -->
+            </ul>
+        </div>
+
+        <div class="outfit-planner-container" id="outfit-planner-container">
+            <div class="outfit-planner-header">
+                <div class="outfit-planner-title">Smart Outfit Planner</div>
+            </div>
+            <ul class="outfit-items" id="outfit-items">
+                <!-- Outfit combinations will appear here -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal for information -->
+    <div class="modal" id="info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">About Packing Assistant</div>
+                <button class="close-btn" id="close-modal">×</button>
+            </div>
+            <p>This smart packing assistant helps you create personalized packing lists and outfit plans for your trips. Simply tell us about your destination, trip duration, and planned activities, and we'll generate a comprehensive checklist and outfit recommendations. Try the Game Mode for fun packing challenges!</p>
+            <p><strong>Features:</strong></p>
+            <ul>
+                <li>AI-powered recommendations</li>
+                <li>Interactive progress tracking</li>
+                <li>Save and print checklists</li>
+                <li>Game mode with packing challenges</li>
+                <li>Smart Outfit Planner for mix-and-match clothing</li>
+                <li>Beautiful travel-themed design</li>
+            </ul>
+            <div class="saved-lists" id="saved-lists">
+                <h3>Your Saved Lists</h3>
+                <!-- Saved lists will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const suggestions = document.getElementById('suggestions');
+            const checklistContainer = document.getElementById('checklist-container');
+            const checklistItems = document.getElementById('checklist-items');
+            const checklistTitle = document.getElementById('checklist-title');
+            const printBtn = document.getElementById('print-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const progressBar = document.querySelector('.progress-fill');
+            const progressPercent = document.querySelector('.progress-percent');
+            const packedCount = document.getElementById('packed-count');
+            const remainingCount = document.getElementById('remaining-count');
+            const infoBtn = document.getElementById('info-btn');
+            const infoModal = document.getElementById('info-modal');
+            const closeModal = document.getElementById('close-modal');
+            const savedListsContainer = document.getElementById('saved-lists');
+            const floatingIcons = document.getElementById('floating-icons');
+            const gameModeContainer = document.getElementById('game-mode-container');
+            const gameScoreDisplay = document.getElementById('game-score');
+            const gameFeedbackDisplay = document.getElementById('game-feedback');
+            const outfitPlannerContainer = document.getElementById('outfit-planner-container');
+            const outfitItems = document.getElementById('outfit-items');
+
+            // Create floating icons
+            const icons = ['✈️', '🌴', '🏖️', '🧳', '🗺️', '🏕️', '🏔️', '🌅'];
+            for (let i = 0; i < 15; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'floating-icon';
+                icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+                icon.style.left = `${Math.random() * 100}%`;
+                icon.style.top = `${Math.random() * 100}%`;
+                icon.style.animationDuration = `${10 + Math.random() * 20}s`;
+                floatingIcons.appendChild(icon);
+            }
+
+            // Sample responses from the assistant
+            const responses = {
+                "greeting": "Hello! I'm your smart packing assistant. Tell me about your upcoming trip (destination, duration, activities) to get a personalized packing list and outfit plan. Try Game Mode for fun packing challenges!",
+                "beach": "Great choice! For a beach vacation, here's your personalized packing list and outfit plan:",
+                "business": "I'll help you pack for your business trip. Here are the essentials plus a smart outfit plan:",
+                "weekend": "A weekend getaway sounds fun! Don't forget these items and mix-and-match outfits:",
+                "hiking": "For your hiking adventure, safety is key. Here's your comprehensive packing list and outfit plan:",
+                "fallback": "I can create a customized packing list and outfit plan for you. Please tell me:\n1. Destination\n2. Trip duration\n3. Type of activities\n4. Any special requirements",
+                "saved": "Your checklist and outfit plan have been saved! You can access them anytime from the info button.",
+                "game_feedback": {
+                    "weight_success": "Great job! You packed under 7kg! +50 points!",
+                    "weight_fail": "Oops! You're over 7kg. Try removing some items.",
+                    "items_success": "Awesome! You packed with only 10 items or less! +50 points!",
+                    "items_fail": "Too many items! Reduce to 10 or fewer for the challenge.",
+                    "backpack_success": "Perfect! Everything fits in one backpack! +50 points!",
+                    "backpack_fail": "Some items won't fit in a single backpack. Try lighter options."
+                }
+            };
+
+            // Enhanced packing lists with categories, weights, and outfit planner
+            const packingLists = {
+                "beach": {
+                    "title": "Beach Vacation Packing List",
+                    "categories": {
+                        "Clothing": [
+                            { item: "Swimsuits (2-3)", weight: 0.5, backpack: true },
+                            { item: "Cover-ups/sarongs", weight: 0.3, backpack: true },
+                            { item: "Light sundresses/shorts", weight: 0.7, backpack: true },
+                            { item: "Flip flops/sandals", weight: 0.4, backpack: true },
+                            { item: "Sun hat/visor", weight: 0.2, backpack: true }
+                        ],
+                        "Sun Protection": [
+                            { item: "Sunscreen (SPF 30+)", weight: 0.2, backpack: true },
+                            { item: "Sunglasses (UV protection)", weight: 0.1, backpack: true },
+                            { item: "Aloe vera (for sunburns)", weight: 0.15, backpack: true },
+                            { item: "Lip balm with SPF", weight: 0.05, backpack: true }
+                        ],
+                        "Beach Essentials": [
+                            { item: "Beach towel", weight: 0.5, backpack: false },
+                            { item: "Beach bag", weight: 0.3, backpack: true },
+                            { item: "Waterproof phone case", weight: 0.1, backpack: true },
+                            { item: "Portable cooler", weight: 1.0, backpack: false },
+                            { item: "Beach umbrella", weight: 2.0, backpack: false }
+                        ],
+                        "Electronics": [
+                            { item: "Waterproof camera", weight: 0.3, backpack: true },
+                            { item: "Portable speaker", weight: 0.4, backpack: true },
+                            { item: "Extra batteries/power bank", weight: 0.2, backpack: true }
+                        ]
+                    },
+                    "outfits": [
+                        {
+                            combination: "Swimsuit + Cover-up + Flip Flops",
+                            details: "Perfect for beach days and casual dining.",
+                            versatile: "Cover-up doubles as a light shawl for evening strolls!"
+                        },
+                        {
+                            combination: "Sundress + Sandals + Sun Hat",
+                            details: "Ideal for sightseeing or lunch by the coast.",
+                            versatile: "Sun hat can be used as a stylish accessory for photos!"
+                        },
+                        {
+                            combination: "Shorts + T-shirt + Sandals",
+                            details: "Great for casual outings or water activities.",
+                            versatile: "T-shirt can be layered under a cover-up for extra sun protection!"
+                        }
+                    ]
+                },
+                "business": {
+                    "title": "Business Trip Packing List",
+                    "categories": {
+                        "Work Attire": [
+                            { item: "Suits/blazers (2)", weight: 2.0, backpack: true },
+                            { item: "Dress shirts/blouses (3-4)", weight: 1.0, backpack: true },
+                            { item: "Dress pants/skirts (2-3)", weight: 1.0, backpack: true },
+                            { item: "Dress shoes", weight: 0.8, backpack: true },
+                            { item: "Ties/accessories", weight: 0.2, backpack: true }
+                        ],
+                        "Electronics": [
+                            { item: "Laptop and charger", weight: 2.0, backpack: true },
+                            { item: "Tablet/e-reader", weight: 0.5, backpack: true },
+                            { item: "Portable phone charger", weight: 0.2, backpack: true },
+                            { item: "Headphones", weight: 0.2, backpack: true },
+                            { item: "Universal adapter", weight: 0.1, backpack: true }
+                        ],
+                        "Documents": [
+                            { item: "Business cards", weight: 0.05, backpack: true },
+                            { item: "Notebook and pens", weight: 0.3, backpack: true },
+                            { item: "Travel documents", weight: 0.1, backpack: true },
+                            { item: "Meeting materials", weight: 0.5, backpack: true }
+                        ],
+                        "Comfort Items": [
+                            { item: "Travel pillow", weight: 0.3, backpack: true },
+                            { item: "Eye mask", weight: 0.05, backpack: true },
+                            { item: "Ear plugs", weight: 0.05, backpack: true },
+                            { item: "Hand sanitizer", weight: 0.1, backpack: true }
+                        ]
+                    },
+                    "outfits": [
+                        {
+                            combination: "Suit + Dress Shirt + Dress Shoes",
+                            details: "Formal look for meetings and presentations.",
+                            versatile: "Dress shirt can be paired with casual pants for dinners!"
+                        },
+                        {
+                            combination: "Blazer + Dress Pants + Blouse + Accessories",
+                            details: "Smart-casual for networking events.",
+                            versatile: "Blazer doubles as a jacket for cooler evenings!"
+                        },
+                        {
+                            combination: "Dress Shirt + Skirt + Dress Shoes",
+                            details: "Professional yet comfortable for long days.",
+                            versatile: "Accessories like a scarf can be used as a shawl for flights!"
+                        }
+                    ]
+                },
+                "weekend": {
+                    "title": "Weekend Getaway Packing List",
+                    "categories": {
+                        "Clothing": [
+                            { item: "2-3 outfits", weight: 1.5, backpack: true },
+                            { item: "Comfortable walking shoes", weight: 0.8, backpack: true },
+                            { item: "Jacket/sweater", weight: 0.5, backpack: true },
+                            { item: "Pajamas", weight: 0.3, backpack: true },
+                            { item: "Underwear/socks", weight: 0.3, backpack: true }
+                        ],
+                        "Toiletries": [
+                            { item: "Travel-sized shampoo/conditioner", weight: 0.2, backpack: true },
+                            { item: "Toothbrush/toothpaste", weight: 0.1, backpack: true },
+                            { item: "Deodorant", weight: 0.1, backpack: true },
+                            { item: "Razor", weight: 0.05, backpack: true },
+                            { item: "Makeup (if needed)", weight: 0.2, backpack: true }
+                        ],
+                        "Entertainment": [
+                            { item: "Book/e-reader", weight: 0.3, backpack: true },
+                            { item: "Portable games", weight: 0.2, backpack: true },
+                            { item: "Camera", weight: 0.3, backpack: true },
+                            { item: "Playing cards", weight: 0.1, backpack: true }
+                        ],
+                        "Essentials": [
+                            { item: "Phone charger", weight: 0.1, backpack: true },
+                            { item: "Medications", weight: 0.1, backpack: true },
+                            { item: "Snacks", weight: 0.3, backpack: true },
+                            { item: "Reusable water bottle", weight: 0.3, backpack: true }
+                        ]
+                    },
+                    "outfits": [
+                        {
+                            combination: "T-shirt + Jeans + Walking Shoes",
+                            details: "Casual and comfy for city exploration.",
+                            versatile: "Jacket can be layered for cooler evenings or used as a pillow!"
+                        },
+                        {
+                            combination: "Sweater + Leggings + Sneakers",
+                            details: "Perfect for relaxed outings or travel days.",
+                            versatile: "Sweater doubles as a cozy wrap for flights!"
+                        },
+                        {
+                            combination: "Dress + Jacket + Walking Shoes",
+                            details: "Versatile for dinners or sightseeing.",
+                            versatile: "Scarf can be used as a shawl or picnic blanket!"
+                        }
+                    ]
+                },
+                "hiking": {
+                    "title": "Hiking Adventure Packing List",
+                    "categories": {
+                        "Clothing": [
+                            { item: "Moisture-wicking shirts", weight: 0.5, backpack: true },
+                            { item: "Hiking pants/shorts", weight: 0.5, backpack: true },
+                            { item: "Hiking boots", weight: 1.0, backpack: true },
+                            { item: "Wool socks (2-3 pairs)", weight: 0.3, backpack: true },
+                            { item: "Rain jacket", weight: 0.4, backpack: true }
+                        ],
+                        "Gear": [
+                            { item: "Backpack (30-50L)", weight: 1.5, backpack: true },
+                            { item: "Trekking poles", weight: 0.5, backpack: false },
+                            { item: "Headlamp/flashlight", weight: 0.2, backpack: true },
+                            { item: "Multi-tool/knife", weight: 0.2, backpack: true },
+                            { item: "Compass/GPS", weight: 0.1, backpack: true }
+                        ],
+                        "Safety": [
+                            { item: "First aid kit", weight: 0.3, backpack: true },
+                            { item: "Emergency blanket", weight: 0.1, backpack: true },
+                            { item: "Whistle", weight: 0.05, backpack: true },
+                            { item: "Bear spray (if needed)", weight: 0.3, backpack: true }
+                        ],
+                        "Food/Water": [
+                            { item: "Water bottles/hydration pack", weight: 0.5, backpack: true },
+                            { item: "Water filter/purification tablets", weight: 0.1, backpack: true },
+                            { item: "High-energy snacks", weight: 0.5, backpack: true },
+                            { item: "Portable stove (if camping)", weight: 0.5, backpack: true }
+                        ]
+                    },
+                    "outfits": [
+                        {
+                            combination: "Moisture-wicking Shirt + Hiking Pants + Hiking Boots",
+                            details: "Ideal for long hikes and rugged terrain.",
+                            versatile: "Rain jacket doubles as a windbreaker or emergency shelter!"
+                        },
+                        {
+                            combination: "Fleece Jacket + Shorts + Wool Socks",
+                            details: "Great for cooler mornings or higher altitudes.",
+                            versatile: "Fleece can be used as a pillow during camping!"
+                        },
+                        {
+                            combination: "Base Layer + Hiking Pants + Boots",
+                            details: "Perfect for multi-day treks with varying weather.",
+                            versatile: "Base layer can be worn alone for warmer days!"
+                        }
+                    ]
+                }
+            };
+
+            // Game state
+            let currentTripType = '';
+            let currentChallenge = '';
+            let gameScore = 0;
+            let activeChallenges = new Set();
+
+            // Initial bot message
+            addBotMessage(responses.greeting);
+
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+            
+            document.querySelectorAll('.suggestion-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentTripType = this.getAttribute('data-type');
+                    sendSuggestion(currentTripType);
+                });
+            });
+            
+            printBtn.addEventListener('click', printChecklist);
+            saveBtn.addEventListener('click', saveChecklist);
+            resetBtn.addEventListener('click', resetConversation);
+            infoBtn.addEventListener('click', () => infoModal.style.display = 'flex');
+            closeModal.addEventListener('click', () => infoModal.style.display = 'none');
+            
+            // Game mode event listeners
+            document.querySelectorAll('.challenge-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const challenge = this.getAttribute('data-challenge');
+                    toggleChallenge(challenge, this);
+                });
+            });
+
+            // Close modal when clicking outside
+            infoModal.addEventListener('click', (e) => {
+                if (e.target === infoModal) infoModal.style.display = 'none';
+            });
+
+            // Load saved lists
+            loadSavedLists();
+
+            // Update progress and game stats when checkboxes are clicked
+            checklistItems.addEventListener('change', () => {
+                updateProgress();
+                updateGameStats();
+            });
+
+            function toggleChallenge(challenge, button) {
+                if (activeChallenges.has(challenge)) {
+                    activeChallenges.delete(challenge);
+                    button.classList.remove('active');
+                } else {
+                    activeChallenges.add(challenge);
+                    button.classList.add('active');
+                }
+                updateGameStats();
+                gameModeContainer.style.display = activeChallenges.size > 0 ? 'block' : 'none';
+            }
+
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message) {
+                    addUserMessage(message);
+                    userInput.value = '';
+                    showTypingIndicator();
+                    
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        processUserMessage(message);
+                    }, 1500);
+                }
+            }
+
+            function sendSuggestion(tripType) {
+                addUserMessage(document.querySelector(`.suggestion-btn[data-type="${tripType}"]`).textContent);
+                showTypingIndicator();
+                
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    generatePackingList(tripType);
+                }, 1500);
+            }
+
+            function addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message user-message';
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function addBotMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot-message';
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function showTypingIndicator() {
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message bot-message typing-indicator';
+                typingIndicator.innerHTML = `
+                    <div class="typing"></div>
+                    <div class="typing"></div>
+                    <div class="typing"></div>
+                `;
+                chatMessages.appendChild(typingIndicator);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function removeTypingIndicator() {
+                const indicators = document.querySelectorAll('.typing-indicator');
+                indicators.forEach(indicator => indicator.remove());
+            }
+
+            function processUserMessage(message) {
+                const lowerMsg = message.toLowerCase();
+                
+                if (lowerMsg.includes('beach') || lowerMsg.includes('coast') || lowerMsg.includes('ocean')) {
+                    currentTripType = 'beach';
+                    generatePackingList('beach');
+                } 
+                else if (lowerMsg.includes('business') || lowerMsg.includes('work') || lowerMsg.includes('meeting')) {
+                    currentTripType = 'business';
+                    generatePackingList('business');
+                }
+                else if (lowerMsg.includes('weekend') || lowerMsg.includes('short trip') || lowerMsg.includes('getaway')) {
+                    currentTripType = 'weekend';
+                    generatePackingList('weekend');
+                }
+                else if (lowerMsg.includes('hiking') || lowerMsg.includes('trekking') || lowerMsg.includes('mountain')) {
+                    currentTripType = 'hiking';
+                    generatePackingList('hiking');
+                }
+                else {
+                    addBotMessage(responses.fallback);
+                }
+            }
+
+            function generatePackingList(tripType) {
+                const listData = packingLists[tripType];
+                addBotMessage(responses[tripType]);
+                
+                // Generate checklist
+                checklistItems.innerHTML = '';
+                checklistTitle.textContent = listData.title;
+                
+                for (const [category, items] of Object.entries(listData.categories)) {
+                    const categoryTitle = document.createElement('div');
+                    categoryTitle.className = 'category-title';
+                    categoryTitle.textContent = category;
+                    checklistItems.appendChild(categoryTitle);
+                    
+                    items.forEach(itemData => {
+                        const li = document.createElement('li');
+                        li.className = 'checklist-item';
+                        li.innerHTML = `
+                            <input type="checkbox" id="item-${itemData.item.replace(/\s+/g, '-')}" data-weight="${itemData.weight}" data-backpack="${itemData.backpack}">
+                            <label for="item-${itemData.item.replace(/\s+/g, '-')}">${itemData.item}</label>
+                        `;
+                        checklistItems.appendChild(li);
+                    });
+                }
+                
+                // Generate outfit planner
+                outfitItems.innerHTML = '';
+                listData.outfits.forEach(outfit => {
+                    const li = document.createElement('li');
+                    li.className = 'outfit-item';
+                    li.innerHTML = `
+                        <div class="outfit-combination">${outfit.combination}</div>
+                        <div class="outfit-details">${outfit.details}</div>
+                        <div class="versatile-note">${outfit.versatile}</div>
+                    `;
+                    outfitItems.appendChild(li);
+                });
+                
+                // Show checklist, outfit planner, and game mode
+                checklistContainer.style.display = 'block';
+                outfitPlannerContainer.style.display = 'block';
+                gameModeContainer.style.display = activeChallenges.size > 0 ? 'block' : 'none';
+                updateProgress();
+                updateGameStats();
+                
+                // Scroll to checklist
+                setTimeout(() => {
+                    checklistContainer.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
+
+            function updateProgress() {
+                const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
+                const checked = document.querySelectorAll('#checklist-items input[type="checkbox"]:checked').length;
+                const total = checkboxes.length;
+                const percentage = total > 0 ? Math.round((checked / total) * 100) : 0;
+                
+                // Update progress circle
+                const circumference = 220;
+                const offset = circumference - (percentage / 100) * circumference;
+                progressBar.style.strokeDashoffset = offset;
+                progressPercent.textContent = `${percentage}%`;
+                
+                // Update stats
+                packedCount.textContent = checked;
+                remainingCount.textContent = total - checked;
+            }
+
+            function updateGameStats() {
+                let newScore = 0;
+                let feedbackMessages = [];
+                const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]:checked');
+                const totalWeight = Array.from(checkboxes).reduce((sum, checkbox) => sum + parseFloat(checkbox.dataset.weight), 0);
+                const totalItems = checkboxes.length;
+                const nonBackpackItems = Array.from(checkboxes).filter(checkbox => checkbox.dataset.backpack === 'false').length;
+                const travelTips =[
+                    "Roll clothes instead of folding to save space",
+                    "Put shoes in shower caps to keep clothes clean",
+                    "Use packing cubes to organize your luggage",
+                    "Pack a portable charger for your devices",
+                    "Bring an empty water bottle to fill after security"
+                    ];
+                activeChallenges.forEach(challenge => {
+                    if (challenge === 'weight' && totalWeight <= 7) {
+                        newScore += 50;
+                        feedbackMessages.push(responses.game_feedback.weight_success);
+                    } else if (challenge === 'weight') {
+                        feedbackMessages.push(responses.game_feedback.weight_fail);
+                    }
+                    if (challenge === 'items' && totalItems <= 10) {
+                        newScore += 50;
+                        feedbackMessages.push(responses.game_feedback.items_success);
+                    } else if (challenge === 'items') {
+                        feedbackMessages.push(responses.game_feedback.items_fail);
+                    }
+                    if (challenge === 'backpack' && nonBackpackItems === 0) {
+                        newScore += 50;
+                        feedbackMessages.push(responses.game_feedback.backpack_success);
+                    } else if (challenge === 'backpack') {
+                        feedbackMessages.push(responses.game_feedback.backpack_fail);
+                    }
+                });
+
+                gameScore = newScore;
+                gameScoreDisplay.textContent = gameScore;
+                gameFeedbackDisplay.textContent = feedbackMessages.join(' | ');
+            }
+
+function showRandomTip() {
+    const tip = travelTips[Math.floor(Math.random() * travelTips.length)];
+    addBotMessage(`💡 Travel Tip: ${tip}`);
+}
+
+            function printChecklist() {
+                const originalTitle = document.title;
+                document.title = checklistTitle.textContent + ' - Packing Checklist';
+                // Hide other sections for printing
+                document.querySelectorAll('.container > *:not(.checklist-container):not(.outfit-planner-container)').forEach(el => {
+                    el.style.display = 'none';
+                });
+                checklistContainer.style.backgroundColor = 'white';
+                checklistContainer.style.boxShadow = 'none';
+                outfitPlannerContainer.style.backgroundColor = 'white';
+                outfitPlannerContainer.style.boxShadow = 'none';
+                window.print();
+                // Restore display
+                document.querySelectorAll('.container > *').forEach(el => {
+                    el.style.display = '';
+                });
+                checklistContainer.style.backgroundColor = '';
+                checklistContainer.style.boxShadow = '';
+                outfitPlannerContainer.style.backgroundColor = '';
+                outfitPlannerContainer.style.boxShadow = '';
+                document.title = originalTitle;
+            }
+
+            function saveChecklist() {
+                if (!currentTripType) return;
+                
+                const title = checklistTitle.textContent;
+                const categories = {};
+                const outfits = packingLists[currentTripType].outfits;
+                
+                // Collect all checklist items with their categories
+                const categoryElements = document.querySelectorAll('.category-title');
+                categoryElements.forEach(categoryEl => {
+                    const categoryName = categoryEl.textContent;
+                    categories[categoryName] = [];
+                    
+                    let nextElement = categoryEl.nextElementSibling;
+                    while (nextElement && !nextElement.classList.contains('category-title')) {
+                        if (nextElement.classList.contains('checklist-item')) {
+                            const itemText = nextElement.querySelector('label').textContent;
+                            const checkbox = nextElement.querySelector('input');
+                            categories[categoryName].push({
+                                item: itemText,
+                                weight: parseFloat(checkbox.dataset.weight),
+                                backpack: checkbox.dataset.backpack === 'true'
+                            });
+                        }
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                });
+                
+                const checklist = {
+                    title,
+                    categories,
+                    outfits,
+                    type: currentTripType,
+                    date: new Date().toLocaleDateString(),
+                    timestamp: Date.now(),
+                    gameScore: gameScore
+                };
+                
+                // Get existing saved lists or create new array
+                const savedLists = JSON.parse(localStorage.getItem('packingLists')) || [];
+                savedLists.push(checklist);
+                
+                // Save to localStorage
+                localStorage.setItem('packingLists', JSON.stringify(savedLists));
+                
+                // Show confirmation
+                addBotMessage(responses.saved);
+                
+                // Update saved lists display
+                loadSavedLists();
+            }
+
+            function loadSavedLists() {
+                const savedLists = JSON.parse(localStorage.getItem('packingLists')) || [];
+                savedListsContainer.innerHTML = '<h3>Your Saved Lists</h3>';
+                
+                if (savedLists.length === 0) {
+                    savedListsContainer.innerHTML += '<p>No saved lists yet.</p>';
+                    return;
+                }
+                
+                savedLists.sort((a, b) => b.timestamp - a.timestamp).forEach((list, index) => {
+                    const listElement = document.createElement('div');
+                    listElement.className = 'saved-list';
+                    listElement.innerHTML = `
+                        <div class="saved-list-title">${list.title}${list.gameScore ? ` (Score: ${list.gameScore})` : ''}</div>
+                        <div class="saved-list-date">Saved on ${list.date}</div>
+                    `;
+                    
+                    listElement.addEventListener('click', () => {
+                        currentTripType = list.type;
+                        gameScore = list.gameScore || 0;
+                        loadSavedChecklist(list);
+                        infoModal.style.display = 'none';
+                    });
+                    
+                    savedListsContainer.appendChild(listElement);
+                });
+            }
+
+            function loadSavedChecklist(list) {
+                checklistTitle.textContent = list.title;
+                checklistItems.innerHTML = '';
+                outfitItems.innerHTML = '';
+                
+                // Load checklist items
+                for (const [category, items] of Object.entries(list.categories)) {
+                    const categoryTitle = document.createElement('div');
+                    categoryTitle.className = 'category-title';
+                    categoryTitle.textContent = category;
+                    checklistItems.appendChild(categoryTitle);
+                    
+                    items.forEach(itemData => {
+                        const li = document.createElement('li');
+                        li.className = 'checklist-item';
+                        li.innerHTML = `
+                            <input type="checkbox" id="item-${itemData.item.replace(/\s+/g, '-')}" data-weight="${itemData.weight}" data-backpack="${itemData.backpack}">
+                            <label for="item-${itemData.item.replace(/\s+/g, '-')}">${itemData.item}</label>
+                        `;
+                        checklistItems.appendChild(li);
+                    });
+                }
+                
+                // Load outfit planner
+                list.outfits.forEach(outfit => {
+                    const li = document.createElement('li');
+                    li.className = 'outfit-item';
+                    li.innerHTML = `
+                        <div class="outfit-combination">${outfit.combination}</div>
+                        <div class="outfit-details">${outfit.details}</div>
+                        <div class="versatile-note">${outfit.versatile}</div>
+                    `;
+                    outfitItems.appendChild(li);
+                });
+                
+                checklistContainer.style.display = 'block';
+                outfitPlannerContainer.style.display = 'block';
+                gameModeContainer.style.display = activeChallenges.size > 0 ? 'block' : 'none';
+                updateProgress();
+                updateGameStats();
+                
+                // Scroll to checklist
+                setTimeout(() => {
+                    checklistContainer.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+                
+                addBotMessage(`I've loaded your saved checklist and outfit plan: "${list.title}"${list.gameScore ? ` with a score of ${list.gameScore}` : ''}`);
+            }
+
+            function resetConversation() {
+                // Clear chat messages
+                chatMessages.innerHTML = '';
+                // Reset checklist
+                checklistContainer.style.display = 'none';
+                checklistItems.innerHTML = '';
+                checklistTitle.textContent = 'Your Packing Checklist';
+                // Reset outfit planner
+                outfitPlannerContainer.style.display = 'none';
+                outfitItems.innerHTML = '';
+                // Reset game mode
+                gameModeContainer.style.display = 'none';
+                activeChallenges.clear();
+                document.querySelectorAll('.challenge-btn').forEach(btn => btn.classList.remove('active'));
+                gameScore = 0;
+                gameScoreDisplay.textContent = '0';
+                gameFeedbackDisplay.textContent = '';
+                currentTripType = '';
+                // Reset progress
+                updateProgress();
+                // Show initial greeting
+                addBotMessage(responses.greeting);
+                // Show suggestions
+                suggestions.style.display = 'flex';
+            }
+
+            // Handle destination gallery clicks
+            document.querySelectorAll('.destination-gallery img').forEach(img => {
+                img.addEventListener('click', function() {
+                    const alt = this.alt.toLowerCase();
+                    let tripType = '';
+                    
+                    if (alt.includes('beach')) tripType = 'beach';
+                    else if (alt.includes('mountain')) tripType = 'hiking';
+                    else if (alt.includes('city')) tripType = 'business';
+                    else if (alt.includes('camping')) tripType = 'hiking';
+                    
+                    if (tripType) {
+                        currentTripType = tripType;
+                        sendSuggestion(tripType);
+                    }
+                });
+            });
+
+            // Auto-save progress to localStorage
+            function autoSaveProgress() {
+                const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
+                const progress = Array.from(checkboxes).map(checkbox => ({
+                    id: checkbox.id,
+                    checked: checkbox.checked
+                }));
+                
+                localStorage.setItem(`progress-${currentTripType}`, JSON.stringify(progress));
+            }
+
+            // Load saved progress
+            function loadProgress() {
+                const savedProgress = JSON.parse(localStorage.getItem(`progress-${currentTripType}`));
+                if (savedProgress) {
+                    savedProgress.forEach(progress => {
+                        const checkbox = document.getElementById(progress.id);
+                        if (checkbox) checkbox.checked = progress.checked;
+                    });
+                    updateProgress();
+                    updateGameStats();
+                }
+            }
+
+            // Add event listener for auto-saving progress
+            checklistItems.addEventListener('change', () => {
+                updateProgress();
+                autoSaveProgress();
+                updateGameStats();
+            });
+
+            // Initialize progress and game stats on checklist load
+            checklistContainer.addEventListener('transitionend', () => {
+                if (checklistContainer.style.display === 'block') {
+                    loadProgress();
+                    updateGameStats();
+                }
+            });
+
+            // Handle window print
+            window.addEventListener('beforeprint', () => {
+                // Ensure only checklist and outfit planner are printed
+                document.querySelectorAll('.container > *:not(.checklist-container):not(.outfit-planner-container)').forEach(el => {
+                    el.style.display = 'none';
+                });
+                checklistContainer.style.backgroundColor = 'white';
+                checklistContainer.style.boxShadow = 'none';
+                outfitPlannerContainer.style.backgroundColor = 'white';
+                outfitPlannerContainer.style.boxShadow = 'none';
+            });
+
+            window.addEventListener('afterprint', () => {
+                // Restore display
+                document.querySelectorAll('.container > *').forEach(el => {
+                    el.style.display = '';
+                });
+                checklistContainer.style.backgroundColor = '';
+                checklistContainer.style.boxShadow = '';
+                outfitPlannerContainer.style.backgroundColor = '';
+                outfitPlannerContainer.style.boxShadow = '';
+            });
+
+            // Keyboard accessibility for modal
+            infoModal.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    infoModal.style.display = 'none';
+                }
+            });
+
+            // Focus management for accessibility
+            userInput.addEventListener('focus', () => {
+                userInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            // Initialize suggestions visibility
+            suggestions.style.display = 'flex';
+
+            // Clean up old saved lists (older than 30 days)
+            function cleanOldLists() {
+                const savedLists = JSON.parse(localStorage.getItem('packingLists')) || [];
+                const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+                const updatedLists = savedLists.filter(list => list.timestamp > thirtyDaysAgo);
+                localStorage.setItem('packingLists', JSON.stringify(updatedLists));
+                loadSavedLists();
+            }
+
+            // Run cleanup on load
+            cleanOldLists();
+        });
+    </script>
+</body>
+</html>
